@@ -1,0 +1,77 @@
+// Variables for alert padding, border, and other styling
+$alert-padding-x: 1rem;
+$alert-padding-y: 0.75rem;
+$alert-margin-bottom: 1rem;
+$alert-border-width: 1px;
+$alert-border-radius: 0.25rem;
+$alert-link-font-weight: 500;
+$close-font-size: 1rem;
+
+$theme-colors: (
+  "primary": #007bff,
+  "secondary": #6c757d,
+  "success": #28a745,
+  "danger": #dc3545,
+  "warning": #ffc107,
+  "info": #17a2b8,
+  "light": #f8f9fa,
+  "dark": #343a40
+);
+
+// Helper function for theme colors (returns adjusted colors for each context)
+@function theme-color-level($color, $level) {
+  @return mix($color, $level);
+}
+
+// Base styles for the alert component
+.alert {
+  position: relative;
+  padding: $alert-padding-y $alert-padding-x;
+  margin-bottom: $alert-margin-bottom;
+  border: $alert-border-width solid transparent;
+  @include border-radius($alert-border-radius);
+}
+
+// Style for larger headings in alerts
+.alert-heading {
+  color: inherit; // Prevent conflicts from changing heading color
+}
+
+// Style for links inside alerts
+.alert-link {
+  font-weight: $alert-link-font-weight;
+}
+
+// Dismissible alerts (alerts that can be closed)
+.alert-dismissible {
+  padding-right: $close-font-size + $alert-padding-x * 2;
+
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: $alert-padding-y $alert-padding-x;
+    color: inherit;
+  }
+}
+
+// Generate contextual modifier classes for alert colors
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    @include alert-variant(theme-color-level($color, $alert-bg-level), theme-color-level($color, $alert-border-level), theme-color-level($color, $alert-color-level));
+  }
+}
+
+// Mixin for creating the alert styles based on color levels
+@mixin alert-variant($bg-color, $border-color, $color) {
+  background-color: $bg-color;
+  border-color: $border-color;
+  color: $color;
+}
+
+// Default color levels for alerts
+$alert-bg-level: #f0f0f0;
+$alert-border-level: #dcdcdc;
+$alert-color-level: #212529;
+
