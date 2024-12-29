@@ -30,21 +30,13 @@ if ($idbh) {
 
                 if ($stmt_update->execute()) {
                     // Thêm thông tin chi tiết xử lý vào bảng `chi_tiet_bao_hanh`
-                    $sql_chitiet = "INSERT INTO chi_tiet_bao_hanh (MaBH, MoTaChiTiet) VALUES (?, ?)";
+                    $sql_chitiet = "INSERT INTO chi_tiet_bao_hanh (MaBH, MoTaLChiTiet) VALUES (?, ?)";
                     $stmt_chitiet = $conn->prepare($sql_chitiet);
                     $stmt_chitiet->bind_param("is", $idbh, $chiTiet);
                     $stmt_chitiet->execute();
-
-                    // Gửi thông báo cho người dùng
-                    $thongBao = "Yêu cầu bảo hành của bạn đã được xử lý.";
-                    $trangThai = 0; // Chưa đọc
-                    $sql_thongbao = "INSERT INTO thong_bao (TenDangNhap, NoiDung, NgayGui, TrangThai) VALUES (?, ?, NOW(), ?)";
-                    $stmt_thongbao = $conn->prepare($sql_thongbao);
-                    $stmt_thongbao->bind_param("ssi", $data['TenDangNhap'], $thongBao, $trangThai);
-                    $stmt_thongbao->execute();
-
-                    // Chuyển hướng về danh sách bảo hành đã xử lý
-                    header("Location: baohanhdaxuly.php");
+                
+                    // Thay vì gửi thông báo, chỉ hiển thị thông báo thành công
+                    echo "<script>alert('Đã xử lý thành công!'); window.location.href='baohanhdaxuly.php';</script>";
                     exit();
                 } else {
                     $error_message = "Cập nhật không thành công. Vui lòng thử lại.";

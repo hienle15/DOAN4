@@ -35,18 +35,13 @@ if ($idbh) {
 
                 if ($stmt_update->execute()) {
                     // Thêm thông tin chi tiết bảo hành vào bảng chi_tiet_bao_hanh
-                    $sql_chitiet = "INSERT INTO chi_tiet_bao_hanh (MaBH,MoTaChiTiet) VALUES (?, ?)";
+                    $sql_chitiet = "INSERT INTO chi_tiet_bao_hanh (MaBH, MoTaLChiTiet) VALUES (?, ?)";
                     $stmt_chitiet = $conn->prepare($sql_chitiet);
                     $stmt_chitiet->bind_param("is", $idbh, $chiTiet);
                     $stmt_chitiet->execute();
 
-                    // Gửi thông báo cho người dùng
-                    $sql_thongbao = "INSERT INTO thong_bao (TenDangNhap, NoiDung, NgayGui, TrangThai) VALUES (?, ?, NOW(), ?)";
-                    $stmt_thongbao = $conn->prepare($sql_thongbao);
-                    $stmt_thongbao->bind_param("ssi", $data['TenDangNhap'], $thongBao, $trangThai);
-                    // Nếu thành công, chuyển hướng về danh sách yêu cầu bảo hành
-                    header("Location: baohanhchoxuly.php");
-                    exit();
+                    // Hiển thị thông báo thành công
+                    $success_message = "Đã xét duyệt thành công!";
                 } else {
                     $error_message = "Cập nhật không thành công. Vui lòng thử lại.";
                 }
@@ -78,9 +73,8 @@ if ($idbh) {
         .form-control, .btn {
             margin-bottom: 15px;
         }
-        .error {
-            color: red;
-            margin-bottom: 10px;
+        .alert {
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -88,8 +82,12 @@ if ($idbh) {
     <div class="container">
         <h2 class="text-center">Xử lý yêu cầu bảo hành</h2>
 
+        <?php if (isset($success_message)): ?>
+            <div class="alert alert-success"><?php echo $success_message; ?></div>
+        <?php endif; ?>
+
         <?php if (isset($error_message)): ?>
-            <div class="error"><?php echo $error_message; ?></div>
+            <div class="alert alert-danger"><?php echo $error_message; ?></div>
         <?php endif; ?>
 
         <form action="xulybaohanh.php?id=<?php echo $idbh; ?>" method="POST">
@@ -100,7 +98,7 @@ if ($idbh) {
 
             <div class="mb-3">
                 <label for="ngayHen" class="form-label">Ngày hẹn:</label>
-                <input type="datetime-local" id="ngayHen" name="ngayHen" class="form-control" value="" required>
+                <input type="datetime-local" id="ngayHen" name="ngayHen" class="form-control" required>
             </div>
 
             <div class="mb-3">
